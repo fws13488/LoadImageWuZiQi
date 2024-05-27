@@ -10,22 +10,18 @@
     <button onclick="uploadImage()">Upload Image</button>
     <div id="unityContainer"></div>
     <script>
+        // Function to upload an image to Unity
         function uploadImage() {
             var fileInput = document.getElementById("imageInput");
             var file = fileInput.files[0];
             if (file && (file.type === "image/png" || file.type === "image/jpeg")) {
-                var formData = new FormData();
-                formData.append("image", file);
-                var xhr = new XMLHttpRequest();
-                xhr.open("POST", "/upload", true);
-                xhr.onreadystatechange = function () {
-                    if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-                        var unityInstance = UnityLoader.instantiate("unityContainer", "Build/WebGL.json");
-                        unityInstance.SendMessage("ImageUploader", "UploadImageFromWebsite", xhr.responseText);
-                    }
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    var base64EncodedImageData = e.target.result.split(',')[1];
+                    var unityInstance = UnityLoader.instantiate("unityContainer", "Build/WebGL.json");
+                    unityInstance.SendMessage("ImageUploader", "UploadImageFromWebsite", base64EncodedImageData);
                 };
-                xhr.responseType = "text";
-                xhr.send(formData);
+                reader.readAsDataURL(file);
             } else {
                 alert("Please select a PNG or JPEG file.");
             }
