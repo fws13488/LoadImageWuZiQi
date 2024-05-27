@@ -6,27 +6,28 @@
 </head>
 <body>
     <h1>Unity WebGL Image Uploader</h1>
-    <input type="file" id="imageInput" accept="image/*">
+    <input type="file" id="imageInput" accept="image/png, image/jpeg">
     <button onclick="uploadImage()">Upload Image</button>
     <div id="unityContainer"></div>
     <script>
         function uploadImage() {
             var fileInput = document.getElementById("imageInput");
             var file = fileInput.files[0];
-            if (file) {
+            if (file && (file.type === "image/png" || file.type === "image/jpeg")) {
                 var formData = new FormData();
                 formData.append("image", file);
                 var xhr = new XMLHttpRequest();
                 xhr.open("POST", "/upload", true);
                 xhr.onreadystatechange = function () {
                     if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-                        // Send the image data to Unity as a base64-encoded string
                         var unityInstance = UnityLoader.instantiate("unityContainer", "Build/WebGL.json");
                         unityInstance.SendMessage("ImageUploader", "UploadImageFromWebsite", xhr.responseText);
                     }
                 };
                 xhr.responseType = "text";
                 xhr.send(formData);
+            } else {
+                alert("Please select a PNG or JPEG file.");
             }
         }
     </script>
