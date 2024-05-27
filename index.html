@@ -2,23 +2,34 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Unity WebGL Interaction</title>
+    <title>Unity WebGL Image Uploader</title>
 </head>
 <body>
-    <h1>Unity WebGL Interaction</h1>
-
-    <button onclick="callUnityFunction()">Call Unity Function</button>
-
+    <h1>Unity WebGL Image Uploader</h1>
+    <input type="file" id="imageInput" accept="image/*">
+    <button onclick="uploadImage()">Upload Image</button>
     <div id="unityContainer"></div>
-
     <script>
-        // Function to call a function in Unity
-        function callUnityFunction() {
-            var unityInstance = UnityLoader.instantiate("unityContainer", "Build/WebGL.json");
-            unityInstance.SendMessage("GameObject", "UnityFunction", "Hello from HTML!");
+        function uploadImage() {
+            var fileInput = document.getElementById("imageInput");
+            var file = fileInput.files[0];
+            if (file) {
+                var formData = new FormData();
+                formData.append("image", file);
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "/upload", true);
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                        // Send the image data to Unity as a base64-encoded string
+                        var unityInstance = UnityLoader.instantiate("unityContainer", "Build/WebGL.json");
+                        unityInstance.SendMessage("ImageUploader", "UploadImageFromWebsite", xhr.responseText);
+                    }
+                };
+                xhr.responseType = "text";
+                xhr.send(formData);
+            }
         }
     </script>
-
     <script src="Build/UnityLoader.js"></script>
 </body>
 </html>
