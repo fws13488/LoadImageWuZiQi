@@ -23,9 +23,11 @@
                 xhr.open("POST", "/upload", true);
                 xhr.onreadystatechange = function () {
                     if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-                        console.log("Image uploaded successfully!");
+                        // Send the image data to Unity
+                        Unity.SendMessage("ImageUploader", "UploadImageFromWebsite", xhr.response);
                     }
                 };
+                xhr.responseType = "arraybuffer";
                 xhr.send(formData);
             }
         });
