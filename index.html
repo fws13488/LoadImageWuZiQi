@@ -8,19 +8,29 @@
     <h1>Unity WebGL Image Uploader</h1>
     <input type="file" id="imageInput" accept="image/png, image/jpeg">
     <button onclick="uploadImage()">Upload Image</button>
-    <div id="unityContainer"></div>
+    <div id="unityContainer" style="width: 960px; height: 600px;"></div>
 
     <!-- Unity Loader Script -->
-    <script src="Build/UnityLoader.js"></script>
+    <script src="Build/Build.loader.js"></script>
     
     <script>
         var unityInstance;
 
         // Function to initialize Unity
         function initializeUnity() {
-            unityInstance = UnityLoader.instantiate("unityContainer", "Build/WebGL.json", {
-                onProgress: UnityProgress
-            });
+            var buildUrl = "Build";
+            var loaderUrl = buildUrl + "/Build.loader.js";
+            var config = {
+                dataUrl: buildUrl + "/Build.data",
+                frameworkUrl: buildUrl + "/Build.framework.js",
+                codeUrl: buildUrl + "/Build.wasm",
+                streamingAssetsUrl: "StreamingAssets",
+                companyName: "YourCompany",
+                productName: "YourProduct",
+                productVersion: "1.0",
+            };
+
+            unityInstance = UnityLoader.instantiate("unityContainer", loaderUrl, config);
         }
 
         // Function to upload an image to Unity
