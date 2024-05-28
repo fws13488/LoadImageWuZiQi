@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Unity WebGL Image Uploader</title>
@@ -9,7 +9,20 @@
     <input type="file" id="imageInput" accept="image/png, image/jpeg">
     <button onclick="uploadImage()">Upload Image</button>
     <div id="unityContainer"></div>
+
+    <!-- Unity Loader Script -->
+    <script src="Build/UnityLoader.js"></script>
+    
     <script>
+        var unityInstance;
+
+        // Function to initialize Unity
+        function initializeUnity() {
+            unityInstance = UnityLoader.instantiate("unityContainer", "Build/WebGL.json", {
+                onProgress: UnityProgress
+            });
+        }
+
         // Function to upload an image to Unity
         function uploadImage() {
             var fileInput = document.getElementById("imageInput");
@@ -18,15 +31,22 @@
                 var reader = new FileReader();
                 reader.onload = function(e) {
                     var base64EncodedImageData = e.target.result.split(',')[1];
-                    var unityInstance = UnityLoader.instantiate("unityContainer", "Build/WebGL.json");
-                    unityInstance.SendMessage("ImageUploader", "UploadImageFromWebsite", base64EncodedImageData);
+                    if (unityInstance) {
+                        unityInstance.SendMessage("ImageUploader", "UploadImageFromWebsite", base64EncodedImageData);
+                    } else {
+                        alert("Unity instance is not initialized.");
+                    }
                 };
                 reader.readAsDataURL(file);
             } else {
                 alert("Please select a PNG or JPEG file.");
             }
         }
+
+        // Initialize Unity when the page loads
+        window.onload = function() {
+            initializeUnity();
+        };
     </script>
-    <script src="Build/UnityLoader.js"></script>
 </body>
 </html>
