@@ -10,16 +10,11 @@
     <button onclick="uploadImage()">Upload Image</button>
     <div id="unityContainer" style="width: 960px; height: 600px;"></div>
 
-    <!-- Unity Loader Script -->
-    <script src="Build/Build.loader.js"></script>
-    
     <script>
-        var unityInstance;
+        var unityInstance = null;
 
-        // Function to initialize Unity
         function initializeUnity() {
             var buildUrl = "Build";
-            var loaderUrl = buildUrl + "/Build.loader.js";
             var config = {
                 dataUrl: buildUrl + "/Build.data",
                 frameworkUrl: buildUrl + "/Build.framework.js",
@@ -28,12 +23,20 @@
                 companyName: "YourCompany",
                 productName: "YourProduct",
                 productVersion: "1.0",
+                showBanner: UnityProgress
             };
 
-            unityInstance = UnityLoader.instantiate("unityContainer", loaderUrl, config);
+            createUnityInstance(document.querySelector("#unityContainer"), config, (progress) => {
+                // You can use this callback to display loading progress
+                console.log(`Loading progress: ${progress * 100}%`);
+            }).then((instance) => {
+                unityInstance = instance;
+                console.log("Unity instance initialized.");
+            }).catch((message) => {
+                alert(message);
+            });
         }
 
-        // Function to upload an image to Unity
         function uploadImage() {
             var fileInput = document.getElementById("imageInput");
             var file = fileInput.files[0];
@@ -53,10 +56,22 @@
             }
         }
 
-        // Initialize Unity when the page loads
         window.onload = function() {
             initializeUnity();
         };
+
+        function UnityProgress(gameInstance, progress) {
+            if (!gameInstance.Module) {
+                return;
+            }
+            var loader = document.querySelector("#unityContainer").querySelector(".progress");
+            if (loader) {
+                loader.style.width = 100 * progress + "%";
+            }
+        }
     </script>
+
+    <!-- Unity Loader Script -->
+    <script src="Build/Build.loader.js"></script>
 </body>
 </html>
