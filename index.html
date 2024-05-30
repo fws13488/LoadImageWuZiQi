@@ -10,6 +10,9 @@
     <button onclick="uploadImage()">Upload Image</button>
     <div id="unityContainer" style="width: 960px; height: 600px;"></div>
 
+    <!-- Unity Loader Script -->
+    <script src="Build/Build.loader.js"></script>
+
     <script>
         var unityInstance = null;
 
@@ -27,7 +30,6 @@
             };
 
             createUnityInstance(document.querySelector("#unityContainer"), config, (progress) => {
-                // You can use this callback to display loading progress
                 console.log(`Loading progress: ${progress * 100}%`);
             }).then((instance) => {
                 unityInstance = instance;
@@ -70,8 +72,5 @@
             }
         }
     </script>
-
-    <!-- Unity Loader Script -->
-    <script src="Build/Build.loader.js"></script>
 </body>
 </html>
