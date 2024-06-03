@@ -59,39 +59,3 @@
         }
 
         window.onload = function() {
-            initializeUnity();
-        };
-
-        function UnityProgress(gameInstance, progress) {
-            if (!gameInstance.Module) {
-                return;
-            }
-            var loader = document.querySelector("#unityContainer").querySelector(".progress");
-            if (loader) {
-                loader.style.width = 100 * progress + "%";
-            }
-        }
-    </script>
-    <script src="Build/Build.loader.js"></script>
-    <script src="Build/Build.framework.js"></script>
-    <script>
-      createUnityInstance(
-        document.querySelector("#unity-canvas"),
-        {
-          dataUrl: "Build/Build.data",
-          frameworkUrl: "Build/Build.framework.js",
-          codeUrl: "Build/Build.wasm",
-          streamingAssetsUrl: "StreamingAssets",
-          companyName: "Your Company Name",
-          productName: "Your Product Name",
-          productVersion: "1.0",
-        },
-        (progress) => {
-          // Handle progress events here
-        }
-      ).then((unityInstance) => {
-        // Handle the successful initialization of the Unity instance
-      });
-    </script>
-</body>
-</html>
